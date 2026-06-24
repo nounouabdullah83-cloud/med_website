@@ -1,0 +1,68 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Update Business Day | MedicineApp{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-page-header">
+        <div>
+            <h1>Update Hours: {{ business_day.get_day_display }}</h1>
+            <p>Set opening and closing times or mark as closed.</p>
+        </div>
+        <a href="{% url 'dashboard:manage_schedule' %}" class="btn btn-outline btn-sm">Back to Schedule</a>
+    </div>
+
+    <div class="card" style="max-width: 500px; margin: 0 auto;">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.day.id_for_label }}">Day</label>
+                <select name="{{ form.day.name }}" id="{{ form.day.id_for_label }}" class="form-select" disabled>
+                    {% for choice in form.day.field.choices %}
+                        <option value="{{ choice.0 }}" {% if form.day.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="{{ form.day.name }}" value="{{ form.day.value }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.opening_time.id_for_label }}">Opening Time</label>
+                <input type="time" name="{{ form.opening_time.name }}" id="{{ form.opening_time.id_for_label }}" class="form-input" value="{% if form.opening_time.value|time:'H:i' %}{{ form.opening_time.value|time:'H:i' }}{% else %}{{ form.opening_time.value|default:'' }}{% endif %}">
+                {% if form.opening_time.errors %}
+                    <div class="form-error">{{ form.opening_time.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.closing_time.id_for_label }}">Closing Time</label>
+                <input type="time" name="{{ form.closing_time.name }}" id="{{ form.closing_time.id_for_label }}" class="form-input" value="{% if form.closing_time.value|time:'H:i' %}{{ form.closing_time.value|time:'H:i' }}{% else %}{{ form.closing_time.value|default:'' }}{% endif %}">
+                {% if form.closing_time.errors %}
+                    <div class="form-error">{{ form.closing_time.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group" style="flex-direction: row; align-items: center; gap: 12px; margin-top: 10px;">
+                <input type="checkbox" name="{{ form.is_closed.name }}" id="{{ form.is_closed.id_for_label }}" {% if form.is_closed.value %}checked{% endif %} style="width: 20px; height: 20px; accent-color: var(--primary);">
+                <label class="form-label" for="{{ form.is_closed.id_for_label }}" style="margin-bottom: 0; cursor: pointer;">Mark as Closed</label>
+            </div>
+
+            <div style="margin-top: 32px; display: flex; gap: 12px; border-top: 1px solid var(--border); padding-top: 24px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                <a href="{% url 'dashboard:manage_schedule' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

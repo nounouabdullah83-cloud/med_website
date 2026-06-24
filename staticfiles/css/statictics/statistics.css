@@ -1,0 +1,70 @@
+/* statistics.css — inherits tokens from base.css */
+
+.statistics-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.period-select {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color var(--transition);
+}
+
+.period-select:focus {
+    border-color: var(--primary);
+}
+
+/* Revenue cards specific */
+.revenue-card {
+    background: var(--primary-deep);
+    color: #fff;
+}
+
+.revenue-card .stat-label { color: var(--text-muted); }
+.revenue-card .stat-value { color: var(--text); }
+.revenue-card .stat-icon { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+/* Section layouts */
+.stats-section {
+    margin-bottom: 40px;
+}
+
+.stats-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 24px;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.status-card {
+    padding: 24px;
+    text-align: center;
+}
+
+.status-card h4 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.status-card p {
+    font-size: 2rem;
+    font-weight: 800;
+}

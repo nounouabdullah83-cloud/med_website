@@ -1,0 +1,60 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Manage Schedule | MedicineApp{% endblock %}
+
+{% block dashboard_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-page-header">
+        <div>
+            <h1>Business Hours</h1>
+            <p>Set your clinic's opening and closing times for each day.</p>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Opening Time</th>
+                        <th>Closing Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in schedule %}
+                    <tr>
+                        <td><strong>{{ day.get_day_display }}</strong></td>
+                        <td>{{ day.opening_time|time:"H:i" }}</td>
+                        <td>{{ day.closing_time|time:"H:i" }}</td>
+                        <td>
+                            {% if day.is_closed %}
+                                <span class="badge badge-danger">Closed</span>
+                            {% else %}
+                                <span class="badge badge-success">Open</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'dashboard:update_business_day' day.pk %}" class="btn btn-outline btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <p>No schedule configured.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

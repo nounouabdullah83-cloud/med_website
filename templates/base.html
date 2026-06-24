@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MedicineApp{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Emergency / Information Top Bar -->
+<div class="top-bar">
+    <div class="container top-bar__container">
+        <span>📞 Emergency Contact: 1-800-555-0199</span>
+        <span>🕒 Hours: Mon - Sat: 8:00 AM - 8:00 PM</span>
+    </div>
+</div>
+
+<header class="header">
+    <nav class="navbar container">
+        <a href="{% url 'core:landing_page' %}" class="logo">
+            Medicine<span>App</span>
+        </a>
+
+        <div class="nav-wrapper" id="nav-wrapper">
+            <ul class="nav-links">
+                {% if request.resolver_match.app_name == 'dashboard' or request.resolver_match.app_name == 'statictics' %}
+                    <li><a href="{% url 'core:landing_page' %}" class="nav-link">View Landing Page</a></li>
+                {% else %}
+                    <li><a href="{% url 'core:landing_page' %}#about_section" class="nav-link">About</a></li>
+                    <li><a href="{% url 'core:landing_page' %}#services" class="nav-link">Services</a></li>
+                    <li><a href="{% url 'core:landing_page' %}#schedule" class="nav-link">Schedule</a></li>
+                    <li><a href="{% url 'core:landing_page' %}#booking" class="btn btn-accent btn-sm">Book Now</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li>
+                    <form action="{% url 'logout' %}" method="post" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                </li>
+                {% endif %}
+            </ul>
+
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard:show_dashboard' %}" class="btn btn-primary btn-sm dashboard-btn">
+                        Dashboard
+                    </a>
+                {% else %}
+                     <a href="{% url 'login' %}" class="btn btn-outline btn-sm login-btn">
+                        Admin Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </nav>
+</header>
+
+<main class="main-content">
+    {% if messages %}
+    <div class="container alert-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <span class="alert-message">{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container footer__container">
+        <div class="footer__brand">
+            <h3 class="footer__logo">Medicine<span>App</span></h3>
+            <p>Providing quality healthcare services to our community.</p>
+        </div>
+        <div class="footer__bottom">
+            <p>&copy; {% now "Y" %} MedicineApp. All rights reserved.</p>
+            <p class="footer__disclaimer">Disclaimer: If you are experiencing a medical emergency, please call local emergency services immediately.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'js/base.js' %}"></script>
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

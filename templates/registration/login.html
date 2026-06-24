@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Login | MedicineApp{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/registration/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <div class="card login-card">
+        <div class="login-header">
+            <div style="font-size: 2rem; margin-bottom: 16px;">🔐</div>
+            <h2>Admin Login</h2>
+            <p>Access your clinic dashboard</p>
+        </div>
+
+        {% if form.errors %}
+            <div class="error-message">
+                Invalid username or password.
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+                <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="form-input" placeholder="Enter your username" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+                <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" class="form-input" placeholder="Enter your password">
+            </div>
+
+            <button type="submit" class="btn btn-primary login-btn">
+                Log In to Dashboard
+            </button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 24px;">
+            <a href="{% url 'core:landing_page' %}" style="font-size: 0.85rem; color: var(--text-muted);">← Back to website</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

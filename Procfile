@@ -1,0 +1,1 @@
+web: gunicorn medicne_website.wsgi

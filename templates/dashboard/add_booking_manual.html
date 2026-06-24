@@ -1,0 +1,107 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Manual Booking | MedicineApp{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-page-header">
+        <div>
+            <h1>New Manual Booking</h1>
+            <p>Directly schedule an appointment for a patient.</p>
+        </div>
+        <a href="{% url 'dashboard:all_bookings' %}" class="btn btn-outline btn-sm">All Bookings</a>
+    </div>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label" for="{{ form.service.id_for_label }}">Select Service</label>
+                    <select name="{{ form.service.name }}" id="{{ form.service.id_for_label }}" class="form-select">
+                        {% for choice in form.service.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.service.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if form.service.errors %}
+                        <div class="form-error">{{ form.service.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.full_name.id_for_label }}">Patient Name</label>
+                    <input type="text" name="{{ form.full_name.name }}" id="{{ form.full_name.id_for_label }}" class="form-input" placeholder="Full name" value="{{ form.full_name.value|default:'' }}">
+                    {% if form.full_name.errors %}
+                        <div class="form-error">{{ form.full_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.age.id_for_label }}">Patient Age</label>
+                    <input type="number" name="{{ form.age.name }}" id="{{ form.age.id_for_label }}" class="form-input" placeholder="Age" value="{{ form.age.value|default:'' }}">
+                    {% if form.age.errors %}
+                        <div class="form-error">{{ form.age.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.email.id_for_label }}">Email</label>
+                    <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" class="form-input" placeholder="Email address" value="{{ form.email.value|default:'' }}">
+                    {% if form.email.errors %}
+                        <div class="form-error">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                    <input type="text" name="{{ form.phone_number.name }}" id="{{ form.phone_number.id_for_label }}" class="form-input" placeholder="Phone number" value="{{ form.phone_number.value|default:'' }}">
+                    {% if form.phone_number.errors %}
+                        <div class="form-error">{{ form.phone_number.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.appointment_date.id_for_label }}">Date</label>
+                    <input type="date" name="{{ form.appointment_date.name }}" id="{{ form.appointment_date.id_for_label }}" class="form-input" value="{{ form.appointment_date.value|default:'' }}">
+                    {% if form.appointment_date.errors %}
+                        <div class="form-error">{{ form.appointment_date.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.appointment_time.id_for_label }}">Time</label>
+                    <input type="time" name="{{ form.appointment_time.name }}" id="{{ form.appointment_time.id_for_label }}" class="form-input" value="{{ form.appointment_time.value|default:'' }}">
+                    {% if form.appointment_time.errors %}
+                        <div class="form-error">{{ form.appointment_time.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label" for="{{ form.note.id_for_label }}">Internal Note</label>
+                    <textarea name="{{ form.note.name }}" id="{{ form.note.id_for_label }}" class="form-textarea" rows="3" placeholder="Optional notes about the patient or booking...">{{ form.note.value|default:'' }}</textarea>
+                    {% if form.note.errors %}
+                        <div class="form-error">{{ form.note.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="margin-top: 32px; display: flex; gap: 12px; border-top: 1px solid var(--border); padding-top: 24px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Confirm Booking</button>
+                <a href="{% url 'dashboard:all_bookings' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

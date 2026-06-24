@@ -1,0 +1,98 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}All Bookings | MedicineApp{% endblock %}
+
+{% block dashboard_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-page-header">
+        <div>
+            <h1>All Bookings</h1>
+            <p>Manage and track all patient appointments.</p>
+        </div>
+        <a href="{% url 'dashboard:add_booking_manual' %}" class="btn btn-primary btn-sm">Add Manual Booking</a>
+    </div>
+
+    <div class="table-card">
+        <div class="table-header">
+            <h2>Bookings History</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Patient Name</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Note</th>
+                        <th>Appointment Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td><strong>{{ booking.service.name }}</strong></td>
+                        <td>{{ booking.full_name }}</td>
+                        <td>{{ booking.age }}</td>
+                        <td>{{ booking.email }}</td>
+                        <td>{{ booking.phone_number }}</td>
+                        <td class="note-cell" title="{{ booking.note }}">
+                            {% if booking.note %}
+                                <button class="btn btn-outline btn-sm view-note-btn">View Note</button>
+                            {% else %}
+                                <span style="color: var(--text-muted); font-size: 0.8rem;">No Note</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div>{{ booking.appointment_date|date:"Y-m-d" }}</div>
+                            <small style="color: var(--text-muted);">{{ booking.appointment_time|time:"H:i" }}</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-{{ booking.get_status_display|lower }}">
+                                {{ booking.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="actions-cell">
+                                {% if booking.status == 'pending' %}
+                                <form action="{% url 'dashboard:booking_done' booking.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-sm" title="Mark as Done">Done</button>
+                                </form>
+                                <form action="{% url 'dashboard:booking_cancelled' booking.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger);" title="Cancel">Cancel</button>
+                                </form>
+                                {% else %}
+                                    <span style="color: var(--text-muted); font-size: 0.8rem;">No Action</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <p>No bookings found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/dashboard/dashboard.js' %}"></script>
+{% endblock %}

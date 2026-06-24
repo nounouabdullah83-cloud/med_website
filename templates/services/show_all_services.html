@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Medical Services | MedicineApp{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/landing_page/landing_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 60px; padding-bottom: 100px;">
+    <div class="section-header">
+        <span class="section-label">Care Spectrum</span>
+        <h1>All Medical Services</h1>
+        <p style="color: var(--text-muted); margin-top: 12px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            We offer a wide range of specialized medical services to ensure your health and well-being.
+        </p>
+    </div>
+
+    <div class="services-grid">
+        {% for service in services %}
+            <div class="service-card">
+                {% if service.image %}
+                    <div class="service-card__img-wrap">
+                        <img src="{{ service.image.url }}" alt="{{ service.name }}">
+                    </div>
+                {% endif %}
+                <div class="service-card__body">
+                    <h3>{{ service.name }}</h3>
+                    <p class="description">{{ service.description }}</p>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto;">
+                        <span class="price">${{ service.price }}</span>
+                        <a href="{% url 'core:landing_page' %}#booking" class="btn btn-primary btn-sm">Book now</a>
+                        <a href="{% url 'services:service_detials' service.id %}" class="btn btn-primary btn-sm" style="background-color: white;color: var(--text);">detials</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 60px;">
+            <p style="color: var(--text-muted);">No services available at the moment. Please check back later.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 48px; text-align: center;">
+        <a href="{% url 'core:landing_page' %}" class="btn btn-outline">← Back to Home</a>
+    </div>
+</div>
+{% endblock %}

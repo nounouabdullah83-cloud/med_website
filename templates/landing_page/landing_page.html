@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modern Healthcare Services | MedicineApp{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/landing_page/landing_page.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <!-- Hero Section -->
+    <section class="hero" id="about_section">
+        <div class="container hero__grid">
+            <div class="hero__content">
+                <span class="hero__eyebrow">Expert Medical Care</span>
+                <h1 class="hero__title">Your Health is Our<br><span class="hero__title--highlight">Number One Priority</span></h1>
+                <p class="hero__sub">Experience compassionate healthcare with our team of dedicated professionals. High-quality services tailored to your needs.</p>
+                
+                <div class="hero__actions">
+                    <a href="#booking" class="btn btn-primary btn-lg">Book Appointment</a>
+                    <a href="#services" class="btn btn-outline btn-lg">Our Services</a>
+                </div>
+                
+                <div class="hero__about">
+                    <p>Our medical center is equipped with the latest technology and staffed by experienced specialists committed to providing excellent care for you and your family.</p>
+                </div>
+            </div>
+            
+            <div class="hero__visual">
+                 <div class="hero__blob">
+                     <img src="{% static 'images\hero_section_photo.jpg' %}" alt="Medical Care">
+                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Medical Specialties</span>
+                <h2>Comprehensive Services</h2>
+            </div>
+            
+            <div class="services-grid">
+                {% for service in few_services %}
+                <div class="service-card">
+                    {% if service.image %}
+                        <div class="service-card__img-wrap">
+                            <img src="{{ service.image.url }}" alt="{{ service.name }}">
+                        </div>
+                    {% endif %}
+                    <div class="service-card__body">
+                        <h3>{{ service.name }}</h3>
+                        <p class="description">{{ service.description|slice:":20" }}...</p>
+                        <div class="service-card__footer">
+                            <span class="price">${{ service.price }}</span>
+                            <a href="#booking" class="btn btn-primary btn-sm">Book</a>
+                            <a href="{% url 'services:service_detials' service.id %}" class="btn btn-primary btn-sm" style="background-color: white;color: var(--text);">detials</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="services__explore-wrap">
+                <a href="{% url 'services:show_all_services' %}" class="btn btn-outline">Explore All Services</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section class="schedule" id="schedule">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Availability</span>
+                <h2>When We're Open</h2>
+            </div>
+            
+            <div class="card schedule-card">
+                <table class="schedule-table">
+                    <tbody>
+                        {% for day in schedule %}
+                        <tr>
+                            <td class="day-name">{{ day.get_day_display }}</td>
+                            <td class="hours">
+                                {% if day.is_closed %}
+                                    <span class="badge badge-danger">Closed</span>
+                                {% else %}
+                                    {{ day.opening_time|time:"H:i" }} – {{ day.closing_time|time:"H:i" }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section class="booking-section" id="booking">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Appointment</span>
+                <h2>Ready to Visit Us?</h2>
+                <p class="section-header__sub">Fill out the form below and we'll confirm your slot.</p>
+            </div>
+
+            <div class="card booking-card" id="booking_section">
+                <form action="{% url 'booking:submit_booking' %}" method="post" class="booking-form">
+                    {% csrf_token %}
+                    
+                    {% if booking_form.non_field_errors %}
+                        <div class="errorlist full-width">
+                            {% for error in booking_form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% for hidden in booking_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label" for="{{ booking_form.service.id_for_label }}">Select Service</label>
+                        <select name="{{ booking_form.service.name }}" id="{{ booking_form.service.id_for_label }}" class="form-select">
+                            {% for choice in booking_form.service.field.choices %}
+                                <option value="{{ choice.0 }}" {% if booking_form.service.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if booking_form.service.errors %}
+                            <div class="form-error">{{ booking_form.service.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ booking_form.full_name.id_for_label }}">Full Name</label>
+                        <input type="text" name="{{ booking_form.full_name.name }}" id="{{ booking_form.full_name.id_for_label }}" class="form-input" placeholder="e.g. John Doe" value="{{ booking_form.full_name.value|default:'' }}">
+                        {% if booking_form.full_name.errors %}
+                            <div class="form-error">{{ booking_form.full_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ booking_form.age.id_for_label }}">Age</label>
+                        <input type="number" name="{{ booking_form.age.name }}" id="{{ booking_form.age.id_for_label }}" class="form-input" placeholder="Your age" value="{{ booking_form.age.value|default:'' }}">
+                        {% if booking_form.age.errors %}
+                            <div class="form-error">{{ booking_form.age.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ booking_form.email.id_for_label }}">Email Address</label>
+                        <input type="email" name="{{ booking_form.email.name }}" id="{{ booking_form.email.id_for_label }}" class="form-input" placeholder="john@example.com" value="{{ booking_form.email.value|default:'' }}">
+                        {% if booking_form.email.errors %}
+                            <div class="form-error">{{ booking_form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ booking_form.phone_number.id_for_label }}">Phone Number</label>
+                        <input type="text" name="{{ booking_form.phone_number.name }}" id="{{ booking_form.phone_number.id_for_label }}" class="form-input" placeholder="+1 (555) 000-0000" value="{{ booking_form.phone_number.value|default:'' }}">
+                        {% if booking_form.phone_number.errors %}
+                            <div class="form-error">{{ booking_form.phone_number.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ booking_form.appointment_date.id_for_label }}">Preferred Date</label>
+                        <input type="date" name="{{ booking_form.appointment_date.name }}" id="{{ booking_form.appointment_date.id_for_label }}" class="form-input" value="{{ booking_form.appointment_date.value|default:'' }}">
+                        {% if booking_form.appointment_date.errors %}
+                            <div class="form-error">{{ booking_form.appointment_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ booking_form.appointment_time.id_for_label }}">Preferred Time</label>
+                        <input type="time" name="{{ booking_form.appointment_time.name }}" id="{{ booking_form.appointment_time.id_for_label }}" class="form-input" value="{{ booking_form.appointment_time.value|default:'' }}">
+                        {% if booking_form.appointment_time.errors %}
+                            <div class="form-error">{{ booking_form.appointment_time.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label" for="{{ booking_form.note.id_for_label }}">Additional Note</label>
+                        <textarea name="{{ booking_form.note.name }}" id="{{ booking_form.note.id_for_label }}" class="form-textarea" rows="3" placeholder="Tell us more about your symptoms...">{{ booking_form.note.value|default:'' }}</textarea>
+                        {% if booking_form.note.errors %}
+                            <div class="form-error">{{ booking_form.note.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-actions full-width">
+                        <button type="submit" class="btn btn-primary btn-lg btn-submit">Confirm Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/landing_page/landing_page.js' %}"></script>
+{% endblock %}

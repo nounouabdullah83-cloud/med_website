@@ -1,0 +1,64 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Manage Services | MedicineApp{% endblock %}
+
+{% block dashboard_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-page-header">
+        <div>
+            <h1>Medical Services</h1>
+            <p>Add, edit, or remove services offered by the clinic.</p>
+        </div>
+        <a href="{% url 'dashboard:add_service' %}" class="btn btn-primary btn-sm">+ Add New Service</a>
+    </div>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Service Name</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service in services %}
+                    <tr>
+                        <td>
+                            {% if service.image %}
+                                <img src="{{ service.image.url }}" alt="{{ service.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: var(--radius-sm);">
+                            {% else %}
+                                <div style="width: 50px; height: 50px; background: var(--bg); border-radius: var(--radius-sm);"></div>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ service.name }}</strong></td>
+                        <td><span style="color: var(--primary); font-weight: 700;">${{ service.price }}</span></td>
+                        <td><small style="color: var(--text-muted);">{{ service.description|truncatechars:100 }}</small></td>
+                        <td>
+                            <div class="actions-cell">
+                                <a href="{% url 'dashboard:update_service' service.pk %}" class="btn btn-outline btn-sm">Edit</a>
+                                <a href="{% url 'dashboard:delete_service' service.pk %}" class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger);">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <p>No services found. Start by adding one!</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Admin Overview | MedicineApp{% endblock %}
+
+{% block dashboard_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-page-header">
+        <div>
+            <h1>Admin Overview</h1>
+            <p>Welcome back! Here's what's happening today.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="{% url 'dashboard:add_service' %}" class="btn btn-outline btn-sm">Add Service</a>
+            <a href="{% url 'dashboard:add_booking_manual' %}" class="btn btn-primary btn-sm">Add Manual Booking</a>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card__header">
+                <span class="stat-label">Pending Bookings</span>
+                <span class="stat-icon">📅</span>
+            </div>
+            <span class="stat-value">{{ recent_bookings.count }}</span>
+            <span class="stat-trend neutral">Requires Review</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__header">
+                <span class="stat-label">Total Services</span>
+                <span class="stat-icon">🩺</span>
+            </div>
+            <span class="stat-value" id="services-count">{{ total_services }}</span>
+            <span class="stat-trend positive">Active</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__header">
+                <span class="stat-label">Today's Appointments</span>
+                <span class="stat-icon">⏰</span>
+            </div>
+            <span class="stat-value" id="today-count">{{ today_appointments_count }}</span>
+            <span class="stat-trend positive">Scheduled</span>
+        </div>
+    </div>
+
+    <!-- Recent Bookings Table -->
+    <div class="table-card">
+        <div class="table-header">
+            <h2>Recent Bookings</h2>
+            <a href="{% url 'dashboard:all_bookings' %}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Patient Name</th>
+                        <th>Email</th>
+                        <th>Note</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in recent_bookings %}
+                    <tr>
+                        <td><strong>{{ booking.service.name }}</strong></td>
+                        <td>{{ booking.full_name }} <small style="color: var(--text-muted);">({{ booking.age }})</small></td>
+                        <td>{{ booking.email }}</td>
+                        <td class="note-cell" title="{{ booking.note }}">
+                            {% if booking.note %}
+                                <button class="btn btn-outline btn-sm view-note-btn">View Note</button>
+                            {% else %}
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">No Note</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ booking.created_at|date:"M d, H:i" }}</td>
+                        <td>
+                            <span class="badge badge-{{ booking.get_status_display|lower }}">
+                                {{ booking.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="actions-cell">
+                                <form action="{% url 'dashboard:booking_done' booking.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-icon btn-icon-success" title="Mark as Completed">✓</button>
+                                </form>
+                                <form action="{% url 'dashboard:booking_cancelled' booking.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-icon btn-icon-danger" title="Cancel Booking">✕</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <p>No recent bookings found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/dashboard/dashboard.js' %}"></script>
+{% endblock %}

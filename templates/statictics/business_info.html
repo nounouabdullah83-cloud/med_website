@@ -1,0 +1,116 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Business Statistics | MedicineApp{% endblock %}
+
+{% block dashboard_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/statictics/statistics.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-page-header">
+        <div>
+            <h1>Business Statistics</h1>
+            <p>Track your clinic's performance and growth.</p>
+        </div>
+        <div class="statistics-header-controls">
+            <label class="form-label" style="margin-bottom: 0;">Period:</label>
+            <form method="get" id="period-form">
+                <select name="period" id="period" class="period-select" onchange="this.form.submit()">
+                    <option value="week" {% if period == 'week' %}selected{% endif %}>Last Week</option>
+                    <option value="month" {% if period == 'month' %}selected{% endif %}>Last Month</option>
+                    <option value="year" {% if period == 'year' %}selected{% endif %}>Last Year</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Top Cards -->
+    <div class="stats-grid">
+        <div class="stat-card revenue-card" style="background: white;">
+            <div class="stat-card__header">
+                <span class="stat-label">Total Revenue</span>
+                <span class="stat-icon">💰</span>
+            </div>
+            <span class="stat-value" style="color: black;">${{ total_revenues }}</span>
+            <span class="stat-trend neutral">Earned</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__header">
+                <span class="stat-label">Total Bookings</span>
+                <span class="stat-icon">📅</span>
+            </div>
+            <span class="stat-value">{{ total_bookings }}</span>
+            <span class="stat-trend positive">Total</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__header">
+                <span class="stat-label">Completed</span>
+                <span class="stat-icon">✅</span>
+            </div>
+            <span class="stat-value">{{ completed_count }}</span>
+            <span class="stat-trend positive">Finalized</span>
+        </div>
+    </div>
+
+    <!-- Service Performance -->
+    <section class="stats-section">
+        <h2>Service Performance</h2>
+        <div class="table-card">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Revenue</th>
+                            <th>Total Bookings</th>
+                            <th>Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in service_stats %}
+                        <tr>
+                            <td><strong>{{ stat.name }}</strong></td>
+                            <td><span style="color: var(--primary); font-weight: 700;">${{ stat.revenues }}</span></td>
+                            <td>{{ stat.bookings }}</td>
+                            <td>{{ stat.completed }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">
+                                <div class="empty-state">
+                                    <p>No data available for this period.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointment Statuses -->
+    <section class="stats-section">
+        <h2>Appointment Breakdown</h2>
+        <div class="status-grid">
+            <div class="card status-card">
+                <h4>Completed</h4>
+                <p style="color: var(--success);">{{ status_stats.completed }}</p>
+            </div>
+            <div class="card status-card">
+                <h4>Pending</h4>
+                <p style="color: var(--warning);">{{ status_stats.pending }}</p>
+            </div>
+            <div class="card status-card">
+                <h4>Cancelled</h4>
+                <p style="color: var(--danger);">{{ status_stats.cancelled }}</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/statictics/statistics.js' %}"></script>
+{% endblock %}
