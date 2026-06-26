@@ -30,9 +30,6 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-
 
 # Application definition
 
@@ -44,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'cloudinary_storage',
     'django.contrib.staticfiles',
+    'storages',       # add this
+    'cloudinary',
     'core',
     'services',
     'booking',
