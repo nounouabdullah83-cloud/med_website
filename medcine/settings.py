@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'dashboard',
     'schedule',
     'statictics',
-    'cloudinary',
 ]
 
 # config cloudinary
