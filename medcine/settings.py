@@ -30,6 +30,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
 
 # Application definition
 
