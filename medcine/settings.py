@@ -46,7 +46,16 @@ INSTALLED_APPS = [
     'dashboard',
     'schedule',
     'statictics',
+    'cloudinary',
+    'cloudinary_storage',
 ]
+
+# config cloudinary
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -133,16 +142,12 @@ STATICFILES_DIRS = [
 # Professional static serving with compression and caching
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
-
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 # Professional Security Headers for "Sellable" Project
 SECURE_BROWSER_XSS_FILTER = True
