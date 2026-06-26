@@ -144,7 +144,7 @@ STORAGES = {
         "BACKEND": "storages.backends.cloudinary.CloudinaryStorage",  # ← fix this
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.StaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
 
