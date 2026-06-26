@@ -144,7 +144,7 @@ STORAGES = {
         "BACKEND": "storages.backends.cloudinary.CloudinaryStorage",  # ← fix this
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.StaticFilesStorage",
     },
 }
 
