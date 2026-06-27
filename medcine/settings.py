@@ -141,13 +141,14 @@ STATICFILES_DIRS = [
 # Professional static serving with compression and caching
 STORAGES = {
     "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",  #  Fixed!
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
+# The compatibility line we added earlier to keep Django 6 happy
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Professional Security Headers for "Sellable" Project
